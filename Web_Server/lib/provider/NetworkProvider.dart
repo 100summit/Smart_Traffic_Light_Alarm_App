@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_mobius/model/con.dart';
 import 'package:flutter_mobius/model/con2.dart';
+import 'package:flutter_mobius/model/listLatLong.dart';
 import 'package:flutter_mobius/model/reqTlInfo.dart';
+import 'package:flutter_mobius/model/respGeoQuery.dart';
 import 'package:flutter_mobius/model/respGroupCi.dart';
 import 'package:flutter_mobius/model/respGroupInfo.dart';
 import 'package:flutter_mobius/model/reqTlState.dart';
@@ -103,17 +105,18 @@ class NetworkProvider {
     return null;
   }
 
-  Future<respGroupCi?> requestGeoQuery() async {
-    Uri uri = Uri.parse('http://127.0.0.1:7579/Mobius/grp_tl_ci/fopt');
+  Future<respGeoQuery?> requestGeoQuery(listLatLong data) async {
+    Uri uri = Uri.parse(
+        'http://127.0.0.1:7579/Mobius?gmty=3&gsf=1&geom=$data&rcn=8&ty=2 ');
 
     final response = await http.get(uri, headers: {
       "accept": "application/json",
       "X-M2M-RI": "12345",
-      "X-M2M-Origin": "SummitG"
+      "X-M2M-Origin": "SummitGeo"
     });
 
     if (response.statusCode == 200) {
-      return respGroupCi.fromJson(jsonDecode(response.body));
+      return respGeoQuery.fromJson(jsonDecode(response.body));
     } else {
       print(response.body);
     }
