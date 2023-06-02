@@ -1,0 +1,135 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    signingConfigs {
+        releaseWithSignedKey {
+            storeFile file(keystoreProperties['SIGNED_STORE_FILE'])
+            storePassword keystoreProperties['SIGNED_STORE_PASSWORD']
+            keyAlias keystoreProperties['SIGNED_KEY_ALIAS']
+            keyPassword keystoreProperties['SIGNED_KEY_PASSWORD']
+        }
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = '7.0'
+    }
+
+    compileSdkVersion 32
+
+    defaultConfig {
+        applicationId "com.summit.hackerton"
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue("string", "app_name", "[DEBUG]해커톤")
+
+            applicationIdSuffix '.dev'
+
+            buildConfigField("String", "API_SERVER_BASE_URL", property("mobius.apiServer"))
+
+        }
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseWithSignedKey
+
+            resValue("string", "app_name", "해커톤")
+
+            buildConfigField("String", "API_SERVER_BASE_URL", property("mobius.apiServer"))
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/ASL2.0', 'build.xml']
+        }
+    }
+    buildFeatures {
+        dataBinding true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    namespace 'com.summit.hackerton'
+}
+
+dependencies {
+    // firebase
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.1.1'
+
+    // okhttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson_converter_version"
+
+    // Encrypted Lib
+    implementation "androidx.security:security-crypto:$security_cripto_version"
+
+    // paho - mqtt
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$paho_mqtt_version"
+
+    // glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    // gson
+    implementation "com.google.code.gson:gson:$gson_version"
+
+    // timber - log
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+    // kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$core_ktx_version"
+
+    // coroutine
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine"
+
+    implementation "com.airbnb.android:lottie:5.2.0"
+
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    implementation "androidx.activity:activity-ktx:$activity_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$test_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+}
+
+tasks.register("prepareKotlinBuildScriptModel"){}
