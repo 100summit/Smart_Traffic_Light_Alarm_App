@@ -20,3 +20,14 @@ The project was developed in a Mac environment. It may not work smoothly in a wi
 
 5. Run the project with debugging or release in the main.dart file.
 
+6. Make sure to set the target os to web(chrome) when running.
+
+Depending on the situation, Firebase interworking may be required.
+Create a Firebase project with your personal account, and then connect Firebase in a Flutter project
+- [Connect firebase to flutter](https://firebase.google.com/docs/flutter/setup?hl=ko&platform=web)
+(Make sure to include web settings when installing firebase)
+
+## Special note
+
+The project has the logic of periodically collecting data from users across crosswalks, analyzing and processing the data, and uploading it to mobius.
+To change that period, you must modify the getCiData() function in the main.dart file. Currently, it is set 1 minute.
